@@ -24,6 +24,7 @@
 		    <li class="active"><a href="alleBestellungen.jsp">Alle Bestellungen</a></li>
 		    <li><a href="tischBestellungen.jsp">Bestellungen pro Tisch</a></li>
 		    <li><a href="rechnungen.jsp">Rechnungen</a></li>
+		    <li><a href="loeschen.jsp">Bestellungen löschen</a></li>
 		 </ul>
 		
 		<!-- Lade die Tabelle mit allen Bestellungen aus der Java-Bean -->

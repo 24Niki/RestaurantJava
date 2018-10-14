@@ -12,7 +12,6 @@
 <%@ page import = "java.sql.*"  %>
 <!-- Referenz auf die Java-Bean -->
 <%
-  int index = 0;
   String sSql   = "";
   int tischid = 0;
   String id ="";
@@ -22,11 +21,12 @@
 	id = request.getParameter( "prmID" );
 	tischid = Integer.parseInt(id);
 	
-    sSql = "SELECT bestellung.tischid, bestellung.id, speisen.name, speisen.zubereitungszeit, speisen.preis FROM bestellung INNER JOIN speisen ON bestellung.speisenid=speisen.id WHERE bestellung.tischid = " + tischid;
+    sSql = "DELETE FROM bestellung WHERE bestellung.tischid = " + tischid;
   }
   
   
 %>
+
 <div class="container">
 <h1>Pizzeria Toskana Küche</h1>
 <br>
@@ -35,19 +35,19 @@
 <!-- Navigation -->
 <ul class="nav nav-tabs">
     <li ><a href="alleBestellungen.jsp">Alle Bestellungen</a></li>
-    <li class="active"><a href="tischBestellungen.jsp">Bestellungen pro Tisch</a></li>
+    <li><a href="tischBestellungen.jsp">Bestellungen pro Tisch</a></li>
     <li><a href="rechnungen.jsp">Rechnungen</a></li>
-    <li><a href="loeschen.jsp">Bestellungen löschen</a></li>
+    <li class="active"><a href="loeschen.jsp">Bestellungen löschen</a></li>
   </ul>
 
-<h3>Bestellungen für Tisch anzeigen</h3>
+<h3>Bestellungen löschen</h3>
 
-
+<p>Wählen Sie aus, für welchen Tisch Sie die Bestellungen löschen möchten.</p>
 <form method="post"><pre>
 
 	Tisch-Nummer <input type="number" name="prmID" size=60>
 				 <br>
-	             <input type="submit" name="submit" value="Bestellungen anzeigen">
+	             <input type="submit" name="submit" value="Bestellungen löschen">
 </pre></form>
 
 
@@ -57,7 +57,7 @@
 
 	Connection conn = null;
 	Statement  statem = null;
-	ResultSet  result= null;
+	
   if( request.getParameterNames().hasMoreElements() == true
       && null != sSql   && 0 < sSql.length() )
   {
@@ -68,22 +68,14 @@
 	      conn = DriverManager.getConnection("jdbc:mysql://localhost/restaurantdb?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "");
 	      
 	      statem = conn.createStatement();
-	      result = statem.executeQuery( sSql );
+	      boolean y = statem.execute( sSql );
+	    	 if(y == false){
+	    	 out.println("Bestätigung: Bestellungen wurden gelöscht");
+	    	
+	    	 }
 	      
-	      ResultSetMetaData rsmd = result.getMetaData();
-	      int n = rsmd.getColumnCount(); // Länge der Spalte
 	      
-	      out.println( "<table border=1 cellspacing=0><tr>" );
-	      for( int i=0; i<n; i++ )   
-	        out.println( "<th>"+ueberschriftArray[i]+"</th>" );
-		    while( result.next() ) {
-		        out.println( "</tr><tr>" );
-		        for( int i=1; i<=n; i++ )  // Achtung: erste Spalte mit 1 statt 0
-		          out.println( "<td>" + result.getString( i ) + "</td>" );
-		      }
-		      out.println( "</tr></table>" );
     } finally {
-      try { if( null != result ) result.close(); } catch( Exception ex ) {/*ok*/}
       try { if( null != statem ) statem.close(); } catch( Exception ex ) {/*ok*/}
       try { if( null != conn ) conn.close(); } catch( Exception ex ) {/*ok*/}
     }
